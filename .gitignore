@@ -1,0 +1,4 @@
+.vs
+*.swp
+BBSWebAPI/bin
+BBSWebAPI/obj/Debug
