@@ -5,17 +5,24 @@ using System.Data.SqlClient;
 
 namespace BBSWebAPI.Controllers
 {
+    public class user
+    {
+        public int Name { get; set; }
+        public string Passwd { get; set; }
+    }
+
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
         [HttpGet]
-        public string Get()
+        public IActionResult Get()
         {
-            string connString = "server=localhost;database=bbsdb;";
+            string connString = @"Persist Security Info=False;Initial Catalog=AdventureWorks;server=LAPTOP-FOMVS4G2\MSSQLSERVER_2019;database=forum;User ID=sa;PassWord=123456;";
+
             SqlConnection conn = new SqlConnection(connString);
-            //conn.Open();
-            SqlCommand cmd = new SqlCommand("select * from users");
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("select * from dbo.users",conn);
             SqlDataAdapter sda = new SqlDataAdapter(cmd);
             DataSet ds = new DataSet();
 
@@ -23,20 +30,32 @@ namespace BBSWebAPI.Controllers
 
             DataTable res = ds.Tables[0];
             DataRow dr = res.Rows[0];
-            var value = dr["userNo"].ToString();
+            var user = new
+            {
+                username = dr["userName"].ToString(),
+                password = dr["userPasswd"].ToString()
+            };
+            //var value = dr.ToString();
+            
+            
 
-            return value;
+            conn.Close();
+
+            return Ok(user);
         }
+
         [HttpPost]
         public string Insert(string user,string password)
         {
             return "dwv Post";
         }
+
         [HttpPut]
         public string Update()
         {
             return "dwv Put";
         }
+
         [HttpDelete]
         public string Remove()
         {
